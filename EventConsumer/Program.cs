@@ -10,17 +10,29 @@ namespace EventConsumer
         {
             var eventConsumer = new Program();
             var currentDirectory = eventConsumer.GetProjectDirectory();
+
+            eventConsumer.Configuration(currentDirectory);
+            while (true) 
+            {
+                eventConsumer.Run();    
+            }
+        }
+        public void Configuration(string currentDirectory)
+        {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(currentDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
             AppConfiguration.Load(configuration);
+        }
+        public async Task Run()
+        {
             var signalRUrl = AppConfiguration.signalRHubUrl;
             var signalRClient = new SignalRClient<string>(signalRUrl);
             await signalRClient.StartAsync();
             var receivedMessage = await signalRClient.GetReceivedMessageAsync();
 
-            eventConsumer.PrintMessage(receivedMessage);
+            PrintMessage(receivedMessage);
         }
         public void PrintMessage(string message)
         {
