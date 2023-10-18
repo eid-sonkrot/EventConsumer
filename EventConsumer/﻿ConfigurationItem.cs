@@ -1,0 +1,4 @@
+﻿enum ConfigurationItem
+{
+    SignalRConfig
+}
